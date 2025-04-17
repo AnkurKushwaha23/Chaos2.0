@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Chaos20.MySplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/chaos_bg2</item>
+        <item name="postSplashScreenTheme">@style/Theme.Chaos20</item>
+    </style>
+</resources>
