@@ -27,7 +27,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -100,12 +101,8 @@ dependencies {
 
     implementation(libs.media)
 
-    implementation(libs.paging.compose)
-
     implementation(libs.glide)
     ksp(libs.glide.compiler)
-
-    implementation(libs.lottie.compose)
 
     // Testing
     testImplementation(libs.junit)
