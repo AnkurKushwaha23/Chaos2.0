@@ -35,9 +35,49 @@ fun Navigation(
                 scrollBehavior = scrollBehavior,
                 musicViewModel = musicViewModel,
                 songDBViewModel = songDBViewModel,
-                homeViewModel = homeViewModel
+                homeViewModel = homeViewModel,
+                onSearchClick = {
+                    navController.navigate(Screen.Search)
+                }
             )
         }
+
+        composable<Screen.Search> {
+            LaunchedEffect(key1 = true) {
+                bottomNavViewModel.updateCurrentScreen(Screen.Search)
+            }
+            SearchScreen(musicViewModel = musicViewModel, homeViewModel = homeViewModel)
+        }
+
+        composable<Screen.Favorite> {
+            LaunchedEffect(key1 = true) {
+                bottomNavViewModel.updateCurrentScreen(Screen.Favorite)
+            }
+            FavoriteScreen(
+                scrollBehavior = scrollBehavior,
+                musicViewModel = musicViewModel,
+                songDBViewModel = songDBViewModel,
+                onSearchClick = {
+                    navController.navigate(Screen.Search)
+                }
+            )
+        }
+
+        composable<Screen.Playlist> {
+            LaunchedEffect(key1 = true) {
+                bottomNavViewModel.updateCurrentScreen(Screen.Playlist)
+            }
+            PlaylistScreen(
+                scrollBehavior = scrollBehavior,
+                musicViewModel = musicViewModel,
+                songDBViewModel = songDBViewModel,
+                onSearchClick = {
+                    navController.navigate(Screen.Search)
+                }
+            )
+        }
+    }
+}
 
 //        composable<Screen.Player> {
 //            PlayerScreen(
@@ -58,34 +98,3 @@ fun Navigation(
 //                }
 //            )
 //        }
-
-        composable<Screen.Search> {
-            LaunchedEffect(key1 = true) {
-                bottomNavViewModel.updateCurrentScreen(Screen.Search)
-            }
-            SearchScreen(musicViewModel = musicViewModel, homeViewModel = homeViewModel)
-        }
-
-        composable<Screen.Favorite> {
-            LaunchedEffect(key1 = true) {
-                bottomNavViewModel.updateCurrentScreen(Screen.Favorite)
-            }
-            FavoriteScreen(
-                scrollBehavior = scrollBehavior,
-                musicViewModel = musicViewModel,
-                songDBViewModel = songDBViewModel
-            )
-        }
-
-        composable<Screen.Playlist> {
-            LaunchedEffect(key1 = true) {
-                bottomNavViewModel.updateCurrentScreen(Screen.Playlist)
-            }
-            PlaylistScreen(
-                scrollBehavior = scrollBehavior,
-                musicViewModel = musicViewModel,
-                songDBViewModel = songDBViewModel
-            )
-        }
-    }
-}

@@ -29,7 +29,8 @@ import com.ankurkushwaha.chaos20.presentation.home_screen.SongDBViewModel
 fun FavoriteScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     musicViewModel: MusicViewModel,
-    songDBViewModel: SongDBViewModel
+    songDBViewModel: SongDBViewModel,
+    onSearchClick: () -> Unit = {},
 ) {
     val isLoading by songDBViewModel.isLoading.collectAsState()
     val favSongs by songDBViewModel.favSongs.collectAsState()
@@ -42,6 +43,7 @@ fun FavoriteScreen(
             ChaosTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = "Favorites",
+                onSearchClick = onSearchClick,
                 onMenuClick = { musicViewModel.showChaosBottomSheet() }
             )
         }

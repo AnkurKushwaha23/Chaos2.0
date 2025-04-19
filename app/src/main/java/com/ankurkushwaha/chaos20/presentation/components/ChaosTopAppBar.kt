@@ -1,9 +1,9 @@
 package com.ankurkushwaha.chaos20.presentation.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,10 +13,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,7 +25,8 @@ fun ChaosTopAppBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     title: String = "Chaos",
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onSearchClick: () -> Unit = {},
 ) {
     TopAppBar(
         title = {
@@ -38,7 +35,7 @@ fun ChaosTopAppBar(
                 fontWeight = FontWeight.SemiBold,
             )
         },
-        actions = {
+        navigationIcon = {
             IconButton(onClick = { onMenuClick() }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_menu_24),
@@ -47,14 +44,24 @@ fun ChaosTopAppBar(
                 )
             }
         },
+        actions = {
+            IconButton(onClick = { onSearchClick() }) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black
+                )
+            }
+        },
         scrollBehavior = scrollBehavior,
         modifier = modifier,
+    )
+}
+
 //        colors = TopAppBarDefaults.topAppBarColors(
 //            containerColor = MaterialTheme.colorScheme.primaryContainer,
 //            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
 //        )
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

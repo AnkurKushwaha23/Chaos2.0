@@ -31,7 +31,8 @@ fun HomeScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     musicViewModel: MusicViewModel,
     songDBViewModel: SongDBViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    onSearchClick: () -> Unit = {},
 ) {
     val songs by homeViewModel.songs.collectAsState()
     val permissionsGranted by homeViewModel.permissionsGranted.collectAsState()
@@ -60,6 +61,7 @@ fun HomeScreen(
             // TopAppBar
             ChaosTopAppBar(
                 scrollBehavior = scrollBehavior,
+                onSearchClick = onSearchClick,
                 onMenuClick = { musicViewModel.showChaosBottomSheet() }
             )
 

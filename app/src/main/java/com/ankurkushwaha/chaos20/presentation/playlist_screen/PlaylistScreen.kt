@@ -33,7 +33,8 @@ import com.ankurkushwaha.chaos20.presentation.home_screen.SongDBViewModel
 fun PlaylistScreen(
     scrollBehavior: TopAppBarScrollBehavior,
     musicViewModel: MusicViewModel,
-    songDBViewModel: SongDBViewModel
+    songDBViewModel: SongDBViewModel,
+    onSearchClick: () -> Unit = {},
 ) {
     val isLoading by songDBViewModel.isLoading.collectAsState()
     val playlists by songDBViewModel.playlists.collectAsState()
@@ -48,6 +49,7 @@ fun PlaylistScreen(
             ChaosTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = "Playlists",
+                onSearchClick = onSearchClick,
                 onMenuClick = { musicViewModel.showChaosBottomSheet() }
             )
         }
