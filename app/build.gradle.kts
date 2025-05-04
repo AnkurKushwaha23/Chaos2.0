@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
@@ -83,6 +85,7 @@ dependencies {
     // Hilt dependencies
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.firebase.crashlytics)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
 

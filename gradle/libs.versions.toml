@@ -23,6 +23,9 @@ roomVersion = "2.7.0"
 workManagerVersion = "2.10.0"
 media="1.7.0"
 glide = "4.16.0"
+firebaseCrashlytics = "19.4.3"
+googleGmsGoogleServices = "4.4.2"
+googleFirebaseCrashlytics = "3.0.3"
 
 
 [libraries]
@@ -62,6 +65,7 @@ androidx-work-multiprocess = { module = "androidx.work:work-multiprocess", versi
 media = { module = "androidx.media:media", version.ref = "media" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -70,4 +74,6 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
 

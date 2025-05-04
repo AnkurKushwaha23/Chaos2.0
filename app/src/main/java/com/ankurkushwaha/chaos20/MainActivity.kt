@@ -360,10 +360,10 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EMAIL = ""
-        private const val GITHUB_LINK = ""
+        private const val EMAIL = "ankursenpai@gmail.com"
+        private const val GITHUB_LINK = "https://github.com/AnkurKushwaha23/"
         private const val APP_LINK =
-            "" //change it
+            "https://drive.google.com/file/d/1BK6uhYWuDJsHsvs05CTDTk2m77AxwuQr/view?usp=sharing" //change it
     }
 
     override fun onDestroy() {
