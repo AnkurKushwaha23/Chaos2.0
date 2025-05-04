@@ -36,6 +36,9 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+            firebaseCrashlytics {
+                mappingFileUploadEnabled = true
+            }
         }
     }
     compileOptions {
@@ -85,9 +88,9 @@ dependencies {
     // Hilt dependencies
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.firebase.crashlytics)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
+    implementation(libs.firebase.crashlytics)
 
     // Room dependencies
     implementation(libs.androidx.room.runtime)
