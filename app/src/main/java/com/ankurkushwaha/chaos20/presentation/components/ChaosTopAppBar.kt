@@ -29,6 +29,9 @@ fun ChaosTopAppBar(
     onSearchClick: () -> Unit = {},
 ) {
     TopAppBar(
+//        colors = TopAppBarDefaults.topAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+//        ),
         title = {
             Text(
                 text = title,

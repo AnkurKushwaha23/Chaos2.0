@@ -14,29 +14,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.ankurkushwaha.chaos20.presentation.components.ChaosBottomSheet
+import com.ankurkushwaha.chaos20.presentation.components.BottomNavigation
+import com.ankurkushwaha.chaos20.presentation.components.ChaosTopAppBar
 import com.ankurkushwaha.chaos20.presentation.components.DetailDialog
+import com.ankurkushwaha.chaos20.presentation.components.DrawerContent
 import com.ankurkushwaha.chaos20.presentation.components.InputDialog
 import com.ankurkushwaha.chaos20.presentation.components.MiniPlayer
 import com.ankurkushwaha.chaos20.presentation.components.SleepTimerDialog
@@ -52,6 +51,7 @@ import com.ankurkushwaha.chaos20.presentation.playlist_screen.PlaylistBottomShee
 import com.ankurkushwaha.chaos20.services.MusicService
 import com.ankurkushwaha.chaos20.ui.theme.Chaos20Theme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -89,6 +89,8 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
             Chaos20Theme {
+                val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+                val scope = rememberCoroutineScope()
                 val navController = rememberNavController()
                 val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -99,7 +101,7 @@ class MainActivity : ComponentActivity() {
 
                 // State for player bottom sheet
                 val showPlayerSheet by musicViewModel.showPlayerSheet.collectAsState()
-                val showChaosSheet by musicViewModel.showChaosSheet.collectAsState()
+//                val showChaosSheet by musicViewModel.showChaosSheet.collectAsState()
                 val showMiniPlayer by musicViewModel.showMiniPlayer.collectAsState()
                 val showDetailDialog by musicViewModel.detailDialogState.collectAsState()
 
@@ -114,89 +116,43 @@ class MainActivity : ComponentActivity() {
                 val timerEnabled by sleepTimerViewModel.timerEnabled.collectAsState()
                 val timerMinutes by sleepTimerViewModel.timerMinutes.collectAsState()
 
-
-                Scaffold(
-                    snackbarHost = {
-                        SnackbarHost(hostState = snackbarHostState)
-                    },
-                    bottomBar = {
-                        NavigationBar {
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.Default.Home,
-                                        contentDescription = "Home"
-                                    )
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    drawerContent = {
+                        ModalDrawerSheet(
+                            modifier = Modifier.width(250.dp)
+                        ) {
+                            DrawerContent(
+                                onSleepTimerClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            close()
+                                        }
+                                    }
+                                    sleepTimerViewModel.showSleepDialog()
                                 },
-                                label = { Text("Home") },
-                                selected = currentScreen == Screen.Home,
-                                onClick = {
-                                    navController.navigate(Screen.Home)
-                                }
-                            )
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = "Search"
-                                    )
+                                onReportBugClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            close()
+                                        }
+                                    }
+                                    getMail("Chaos : Bug Report")
                                 },
-                                label = { Text("Search") },
-                                selected = currentScreen == Screen.Search,
-                                onClick = {
-                                    navController.navigate(Screen.Search)
-                                }
-                            )
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        imageVector = if (currentScreen == Screen.Favorite) Icons.Default.Favorite
-                                        else Icons.Default.FavoriteBorder,
-                                        contentDescription = "Fav"
-                                    )
+                                onSuggestionsClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            close()
+                                        }
+                                    }
+                                    getMail("Chaos : Suggestions")
                                 },
-                                label = { Text("Favorite") },
-                                selected = currentScreen == Screen.Favorite,
-                                onClick = {
-                                    navController.navigate(Screen.Favorite)
-                                }
-                            )
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        imageVector = Icons.Default.List,
-                                        contentDescription = "PlayList"
-                                    )
-                                },
-                                label = { Text("Playlist") },
-                                selected = currentScreen == Screen.Playlist,
-                                onClick = {
-                                    navController.navigate(Screen.Playlist)
-                                }
-                            )
-                        }
-                    }
-                ) { paddingValues ->
-                    Column(
-                        modifier = Modifier.padding(paddingValues)
-                    ) {
-                        Box(modifier = Modifier.weight(1f)) {
-                            Navigation(
-                                navController = navController,
-                                scrollBehavior = scrollBehavior,
-                                musicViewModel = musicViewModel,
-                                songDBViewModel = songDBViewModel,
-                                homeViewModel = homeViewModel,
-                                bottomNavViewModel = bottomNavViewModel
-                            )
-
-                            ChaosBottomSheet(
-                                isVisible = showChaosSheet,
-                                onDismiss = { musicViewModel.hideChaosBottomSheet() },
-                                onSleepTimerClick = { sleepTimerViewModel.showSleepDialog() },
-                                onReportBugClick = { getMail("Chaos : Bug Report") },
-                                onSuggestionsClick = { getMail("Chaos : Suggestions") },
                                 onShareClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            close()
+                                        }
+                                    }
                                     val shareIntent = Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(
@@ -210,112 +166,158 @@ class MainActivity : ComponentActivity() {
                                     startActivity(chooser)
                                 },
                                 onAboutDeveloperClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_LINK))
+                                    scope.launch {
+                                        drawerState.apply {
+                                            close()
+                                        }
+                                    }
+                                    val intent =
+                                        Intent(Intent.ACTION_VIEW, Uri.parse(PORTFOLIO_LINK))
                                     startActivity(intent)
                                 }
                             )
-
-                            SleepTimerDialog(
-                                isVisible = showSleepDialog,
-                                initialMinutes = timerMinutes,
-                                initialEnabled = timerEnabled,
-                                onDismiss = { sleepTimerViewModel.hideSleepDialog() },
-                                onConfirm = { enabled, minutes ->
-                                    sleepTimerViewModel.onSleepTimerConfirm(enabled, minutes)
-                                }
-                            )
-
-                            PlayerBottomSheet(
-                                viewModel = musicViewModel,
-                                isVisible = showPlayerSheet,
-                                onDismiss = { musicViewModel.hidePlayer() },
-                                onBackClick = { musicViewModel.hidePlayer() },
-                                onMoreOptionsClick = { song, action ->
-                                    when (action) {
-                                        "ADD_TO_PLAYLIST" -> {
-                                            songDBViewModel.setSongToPlaylistSheet(song)
-                                            songDBViewModel.showPlaylistSheet()
-                                        }
-
-                                        "DETAILS" -> {
-                                            musicViewModel.showSongDetail(song)
+                        }
+                    },
+                ) {
+                    Scaffold(
+                        topBar = {
+                            ChaosTopAppBar(
+                                scrollBehavior = scrollBehavior,
+                                onMenuClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            if (isClosed) open() else close()
                                         }
                                     }
-                                }
+                                },
+                                onSearchClick = { navController.navigate(Screen.Search) }
                             )
-
-                            PlaylistBottomSheet(
-                                playlists = playlists,
-                                song = songForPlaylistSheet,
-                                onAddPlaylistClick = {
-                                    songDBViewModel.showNewPlaylistDialog()
-                                },
-                                onFavouritesClick = { song ->
-                                    songDBViewModel.toggleFavoriteSong(song)
-                                    songDBViewModel.hidePlaylistSheet()
-                                },
-                                onPlaylistClick = { playlistId, song ->
-                                    songDBViewModel.addSongToPlaylist(
-                                        playlistId = playlistId,
-                                        song = song
-                                    )
-                                    songDBViewModel.hidePlaylistSheet()
-                                },
-                                onDismiss = {
-                                    songDBViewModel.hidePlaylistSheet()
-                                },
-                                isVisible = showPlaylistSheet
-                            )
-
-                        }
-
-                        if (showMiniPlayer) {
-                            MiniPlayer(
-                                viewModel = musicViewModel,
-                                onMiniPlayerClick = { musicViewModel.showPlayer() },
-                                modifier = Modifier.fillMaxWidth()
+                        },
+                        snackbarHost = {
+                            SnackbarHost(hostState = snackbarHostState)
+                        },
+                        bottomBar = {
+                            BottomNavigation(
+                                navController = navController,
+                                currentScreen = currentScreen
                             )
                         }
+                    ) { paddingValues ->
+                        Column(
+                            modifier = Modifier.padding(paddingValues)
+                        ) {
+                            Box(modifier = Modifier.weight(1f)) {
+                                Navigation(
+                                    navController = navController,
+                                    scrollBehavior = scrollBehavior,
+                                    musicViewModel = musicViewModel,
+                                    songDBViewModel = songDBViewModel,
+                                    homeViewModel = homeViewModel,
+                                    bottomNavViewModel = bottomNavViewModel
+                                )
 
-                        if (showDetailDialog != null) {
-                            DetailDialog(
-                                song = showDetailDialog!!,
-                                onConfirm = musicViewModel::hideSongDetail,
-                                onDismiss = musicViewModel::hideSongDetail
-                            )
-                        }
+                                SleepTimerDialog(
+                                    isVisible = showSleepDialog,
+                                    initialMinutes = timerMinutes,
+                                    initialEnabled = timerEnabled,
+                                    onDismiss = { sleepTimerViewModel.hideSleepDialog() },
+                                    onConfirm = { enabled, minutes ->
+                                        sleepTimerViewModel.onSleepTimerConfirm(enabled, minutes)
+                                    }
+                                )
 
-                        if (showNewPlaylistDialog) {
-                            InputDialog(
-                                onConfirm = { playlistName ->
-                                    if (playlistName.isNotBlank() && playlistName.isNotEmpty()) {
-                                        songDBViewModel.createNewPlaylist(playlistName)
+                                PlayerBottomSheet(
+                                    viewModel = musicViewModel,
+                                    isVisible = showPlayerSheet,
+                                    onDismiss = { musicViewModel.hidePlayer() },
+                                    onBackClick = { musicViewModel.hidePlayer() },
+                                    onMoreOptionsClick = { song, action ->
+                                        when (action) {
+                                            "ADD_TO_PLAYLIST" -> {
+                                                songDBViewModel.setSongToPlaylistSheet(song)
+                                                songDBViewModel.showPlaylistSheet()
+                                            }
+
+                                            "DETAILS" -> {
+                                                musicViewModel.showSongDetail(song)
+                                            }
+                                        }
+                                    }
+                                )
+
+                                PlaylistBottomSheet(
+                                    playlists = playlists,
+                                    song = songForPlaylistSheet,
+                                    onAddPlaylistClick = {
+                                        songDBViewModel.showNewPlaylistDialog()
+                                    },
+                                    onFavouritesClick = { song ->
+                                        songDBViewModel.toggleFavoriteSong(song)
+                                        songDBViewModel.hidePlaylistSheet()
+                                    },
+                                    onPlaylistClick = { playlistId, song ->
+                                        songDBViewModel.addSongToPlaylist(
+                                            playlistId = playlistId,
+                                            song = song
+                                        )
+                                        songDBViewModel.hidePlaylistSheet()
+                                    },
+                                    onDismiss = {
+                                        songDBViewModel.hidePlaylistSheet()
+                                    },
+                                    isVisible = showPlaylistSheet
+                                )
+
+                            }
+
+                            if (showMiniPlayer) {
+                                MiniPlayer(
+                                    viewModel = musicViewModel,
+                                    onMiniPlayerClick = { musicViewModel.showPlayer() },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+
+                            if (showDetailDialog != null) {
+                                DetailDialog(
+                                    song = showDetailDialog!!,
+                                    onConfirm = musicViewModel::hideSongDetail,
+                                    onDismiss = musicViewModel::hideSongDetail
+                                )
+                            }
+
+                            if (showNewPlaylistDialog) {
+                                InputDialog(
+                                    onConfirm = { playlistName ->
+                                        if (playlistName.isNotBlank() && playlistName.isNotEmpty()) {
+                                            songDBViewModel.createNewPlaylist(playlistName)
+                                            songDBViewModel.hideNewPlaylistDialog()
+                                        }
+                                    },
+                                    onDismissRequest = {
                                         songDBViewModel.hideNewPlaylistDialog()
                                     }
-                                },
-                                onDismissRequest = {
-                                    songDBViewModel.hideNewPlaylistDialog()
-                                }
-                            )
-                        }
+                                )
+                            }
 
-                        if (showRenamePlaylistDialog && currentPlaylist != null) {
-                            InputDialog(
-                                title = "Rename Playlist",
-                                initialText = currentPlaylist!!.name,
-                                onConfirm = { playlistName ->
-                                    if (playlistName.isNotBlank() && playlistName.isNotEmpty()) {
-                                        songDBViewModel.renamePlaylist(
-                                            currentPlaylist!!.id,
-                                            playlistName
-                                        )
+                            if (showRenamePlaylistDialog && currentPlaylist != null) {
+                                InputDialog(
+                                    title = "Rename Playlist",
+                                    initialText = currentPlaylist!!.name,
+                                    onConfirm = { playlistName ->
+                                        if (playlistName.isNotBlank() && playlistName.isNotEmpty()) {
+                                            songDBViewModel.renamePlaylist(
+                                                currentPlaylist!!.id,
+                                                playlistName
+                                            )
+                                            songDBViewModel.hideRenamePlaylistDialog()
+                                        }
+                                    },
+                                    onDismissRequest = {
                                         songDBViewModel.hideRenamePlaylistDialog()
                                     }
-                                },
-                                onDismissRequest = {
-                                    songDBViewModel.hideRenamePlaylistDialog()
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
@@ -361,7 +363,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val EMAIL = "ankursenpai@gmail.com"
-        private const val GITHUB_LINK = "https://github.com/AnkurKushwaha23/"
+        private const val PORTFOLIO_LINK = "https://kushwaha-ankur.vercel.app/"
         private const val APP_LINK =
             "https://drive.google.com/file/d/1BK6uhYWuDJsHsvs05CTDTk2m77AxwuQr/view?usp=sharing" //change it
     }
@@ -371,39 +373,29 @@ class MainActivity : ComponentActivity() {
         musicService = null
     }
 }
-//                                onShareClick = {
-//                                    // Implement share functionality
-//                                    coroutineScope.launch {
-//                                        snackbarHostState.showSnackbar("Sharing song")
+
+//                                ChaosBottomSheet(
+//                                    isVisible = showChaosSheet,
+//                                    onDismiss = { musicViewModel.hideChaosBottomSheet() },
+//                                    onSleepTimerClick = { sleepTimerViewModel.showSleepDialog() },
+//                                    onReportBugClick = { getMail("Chaos : Bug Report") },
+//                                    onSuggestionsClick = { getMail("Chaos : Suggestions") },
+//                                    onShareClick = {
+//                                        val shareIntent = Intent().apply {
+//                                            action = Intent.ACTION_SEND
+//                                            putExtra(
+//                                                Intent.EXTRA_TEXT,
+//                                                "Check out this Android App: $APP_LINK"
+//                                            )
+//                                            type = "text/plain"
+//                                        }
+//                                        val chooser =
+//                                            Intent.createChooser(shareIntent, "Share article via")
+//                                        startActivity(chooser)
+//                                    },
+//                                    onAboutDeveloperClick = {
+//                                        val intent =
+//                                            Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_LINK))
+//                                        startActivity(intent)
 //                                    }
-//                                },
-//                    topBar = {
-//                        TopAppBar(
-//                            title = {
-//                                Text(
-//                                    text = "Chaos",
-//                                    fontWeight = FontWeight.SemiBold,
-//                                    C
 //                                )
-//                            },
-//                            actions = {
-//                                IconButton(onClick = { showMenu = !showMenu }) {
-//                                    Icon(Icons.Default.MoreVert, contentDescription = "More")
-//                                }
-//                                DropdownMenu(
-//                                    expanded = showMenu,
-//                                    onDismissRequest = { showMenu = false }
-//                                ) {
-//                                    DropdownMenuItem(
-//                                        onClick = {
-//                                            showMenu = false
-//                                            coroutineScope.launch {
-//                                                snackbarHostState.showSnackbar("Popup menu item clicked")
-//                                            }
-//                                        },
-//                                        text = { Text("Settings") }
-//                                    )
-//                                }
-//                            }
-//                        )
-//                    },

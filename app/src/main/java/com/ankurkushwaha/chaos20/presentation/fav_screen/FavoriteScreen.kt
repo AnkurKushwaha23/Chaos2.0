@@ -39,14 +39,14 @@ fun FavoriteScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxWidth(),
-        topBar = {
-            ChaosTopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = "Favorites",
-                onSearchClick = onSearchClick,
-                onMenuClick = { musicViewModel.showChaosBottomSheet() }
-            )
-        }
+//        topBar = {
+//            ChaosTopAppBar(
+//                scrollBehavior = scrollBehavior,
+//                title = "Favorites",
+//                onSearchClick = onSearchClick,
+//                onMenuClick = { musicViewModel.showChaosBottomSheet() }
+//            )
+//        }
     ) { paddingValue ->
         Box(
             modifier = Modifier

@@ -45,14 +45,14 @@ fun PlaylistScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxWidth(),
-        topBar = {
-            ChaosTopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = "Playlists",
-                onSearchClick = onSearchClick,
-                onMenuClick = { musicViewModel.showChaosBottomSheet() }
-            )
-        }
+//        topBar = {
+//            ChaosTopAppBar(
+//                scrollBehavior = scrollBehavior,
+//                title = "Playlists",
+//                onSearchClick = onSearchClick,
+//                onMenuClick = { musicViewModel.showChaosBottomSheet() }
+//            )
+//        }
     ) { paddingValue ->
         Box(
             modifier = Modifier

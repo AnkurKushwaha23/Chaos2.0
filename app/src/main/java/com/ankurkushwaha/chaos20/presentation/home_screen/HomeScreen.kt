@@ -59,11 +59,11 @@ fun HomeScreen(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // TopAppBar
-            ChaosTopAppBar(
-                scrollBehavior = scrollBehavior,
-                onSearchClick = onSearchClick,
-                onMenuClick = { musicViewModel.showChaosBottomSheet() }
-            )
+//            ChaosTopAppBar(
+//                scrollBehavior = scrollBehavior,
+//                onSearchClick = onSearchClick,
+//                onMenuClick = { musicViewModel.showChaosBottomSheet() }
+//            )
 
             // Content
             if (permissionsGranted) {
