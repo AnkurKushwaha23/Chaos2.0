@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.ankurkushwaha.chaos20.presentation.components.BottomNavigation
-import com.ankurkushwaha.chaos20.presentation.components.ChaosTopAppBar
 import com.ankurkushwaha.chaos20.presentation.components.DetailDialog
 import com.ankurkushwaha.chaos20.presentation.components.DrawerContent
 import com.ankurkushwaha.chaos20.presentation.components.InputDialog
@@ -45,7 +44,6 @@ import com.ankurkushwaha.chaos20.presentation.home_screen.SleepTimerViewModel
 import com.ankurkushwaha.chaos20.presentation.home_screen.SongDBViewModel
 import com.ankurkushwaha.chaos20.presentation.navigation.BottomNavViewModel
 import com.ankurkushwaha.chaos20.presentation.navigation.Navigation
-import com.ankurkushwaha.chaos20.presentation.navigation.Screen
 import com.ankurkushwaha.chaos20.presentation.player_screen.PlayerBottomSheet
 import com.ankurkushwaha.chaos20.presentation.playlist_screen.PlaylistBottomSheet
 import com.ankurkushwaha.chaos20.services.MusicService
@@ -180,19 +178,6 @@ class MainActivity : ComponentActivity() {
                     },
                 ) {
                     Scaffold(
-                        topBar = {
-                            ChaosTopAppBar(
-                                scrollBehavior = scrollBehavior,
-                                onMenuClick = {
-                                    scope.launch {
-                                        drawerState.apply {
-                                            if (isClosed) open() else close()
-                                        }
-                                    }
-                                },
-                                onSearchClick = { navController.navigate(Screen.Search) }
-                            )
-                        },
                         snackbarHost = {
                             SnackbarHost(hostState = snackbarHostState)
                         },
@@ -209,11 +194,18 @@ class MainActivity : ComponentActivity() {
                             Box(modifier = Modifier.weight(1f)) {
                                 Navigation(
                                     navController = navController,
-                                    scrollBehavior = scrollBehavior,
                                     musicViewModel = musicViewModel,
                                     songDBViewModel = songDBViewModel,
                                     homeViewModel = homeViewModel,
-                                    bottomNavViewModel = bottomNavViewModel
+                                    bottomNavViewModel = bottomNavViewModel,
+                                    onMenuClick = {
+                                        scope.launch {
+                                            drawerState.apply {
+                                                if (isClosed) open() else close()
+                                            }
+                                        }
+                                    }
+//                                    scrollBehavior = scrollBehavior
                                 )
 
                                 SleepTimerDialog(
@@ -373,6 +365,19 @@ class MainActivity : ComponentActivity() {
         musicService = null
     }
 }
+
+//                        topBar = {
+//                            ChaosTopAppBar(
+//                                onMenuClick = {
+//                                    scope.launch {
+//                                        drawerState.apply {
+//                                            if (isClosed) open() else close()
+//                                        }
+//                                    }
+//                                },
+//                                onSearchClick = { navController.navigate(Screen.Search) },
+//                            )
+//                        },
 
 //                                ChaosBottomSheet(
 //                                    isVisible = showChaosSheet,

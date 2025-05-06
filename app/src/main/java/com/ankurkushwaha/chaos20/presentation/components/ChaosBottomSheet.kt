@@ -150,7 +150,7 @@ private fun MenuItem(
             .padding(vertical = 12.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-         Icon(
+        Icon(
             painter = painterResource(id = iconRes),
             contentDescription = text,
             tint = iconColor,

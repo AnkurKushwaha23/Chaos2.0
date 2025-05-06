@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.ankurkushwaha.chaos20.R
@@ -28,11 +26,12 @@ import com.ankurkushwaha.chaos20.presentation.components.StoragePermissionScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    scrollBehavior: TopAppBarScrollBehavior,
     musicViewModel: MusicViewModel,
     songDBViewModel: SongDBViewModel,
     homeViewModel: HomeViewModel,
+    onMenuClick: () -> Unit = {},
     onSearchClick: () -> Unit = {},
+//    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val songs by homeViewModel.songs.collectAsState()
     val permissionsGranted by homeViewModel.permissionsGranted.collectAsState()
@@ -55,15 +54,15 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+//            .nestedScroll(scrollBehavior.nestedScrollConnection)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // TopAppBar
-//            ChaosTopAppBar(
-//                scrollBehavior = scrollBehavior,
-//                onSearchClick = onSearchClick,
-//                onMenuClick = { musicViewModel.showChaosBottomSheet() }
-//            )
+            ChaosTopAppBar(
+                onSearchClick = onSearchClick,
+                onMenuClick = onMenuClick,
+//                scrollBehavior = scrollBehavior
+            )
 
             // Content
             if (permissionsGranted) {
@@ -126,16 +125,3 @@ fun HomeScreen(
         }
     }
 }
-// Text(
-//                            text = errorMessage ?: "Unknown error",
-//                            color = MaterialTheme.colorScheme.error,
-//                            modifier = Modifier
-//                                .align(Alignment.Center)
-//                                .padding(16.dp)
-//                        )
-//                        Text(
-//                            text = "No songs found",
-//                            modifier = Modifier
-//                                .align(Alignment.Center)
-//                                .padding(16.dp)
-//                        )

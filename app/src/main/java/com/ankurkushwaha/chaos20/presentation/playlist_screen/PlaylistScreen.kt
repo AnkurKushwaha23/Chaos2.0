@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,10 +30,11 @@ import com.ankurkushwaha.chaos20.presentation.home_screen.SongDBViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistScreen(
-    scrollBehavior: TopAppBarScrollBehavior,
     musicViewModel: MusicViewModel,
     songDBViewModel: SongDBViewModel,
+    onMenuClick: () -> Unit = {},
     onSearchClick: () -> Unit = {},
+//    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val isLoading by songDBViewModel.isLoading.collectAsState()
     val playlists by songDBViewModel.playlists.collectAsState()
@@ -45,14 +45,14 @@ fun PlaylistScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxWidth(),
-//        topBar = {
-//            ChaosTopAppBar(
+        topBar = {
+            ChaosTopAppBar(
+                title = "Playlists",
+                onSearchClick = onSearchClick,
+                onMenuClick = onMenuClick
 //                scrollBehavior = scrollBehavior,
-//                title = "Playlists",
-//                onSearchClick = onSearchClick,
-//                onMenuClick = { musicViewModel.showChaosBottomSheet() }
-//            )
-//        }
+            )
+        }
     ) { paddingValue ->
         Box(
             modifier = Modifier
@@ -142,17 +142,3 @@ fun PlaylistScreen(
         }
     }
 }
-
-//                Text(
-//                    text = errorMessage ?: "Unknown error",
-//                    color = MaterialTheme.colorScheme.error,
-//                    modifier = Modifier
-//                        .align(Alignment.Center)
-//                        .padding(16.dp)
-//                )
-//                Text(
-//                    text = "No songs found",
-//                    modifier = Modifier
-//                        .align(Alignment.Center)
-//                        .padding(16.dp)
-//                )

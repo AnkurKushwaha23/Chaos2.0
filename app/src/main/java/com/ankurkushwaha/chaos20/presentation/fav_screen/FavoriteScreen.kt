@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,10 +26,11 @@ import com.ankurkushwaha.chaos20.presentation.home_screen.SongDBViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
-    scrollBehavior: TopAppBarScrollBehavior,
     musicViewModel: MusicViewModel,
     songDBViewModel: SongDBViewModel,
+    onMenuClick: () -> Unit = {},
     onSearchClick: () -> Unit = {},
+//    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     val isLoading by songDBViewModel.isLoading.collectAsState()
     val favSongs by songDBViewModel.favSongs.collectAsState()
@@ -39,14 +39,14 @@ fun FavoriteScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxWidth(),
-//        topBar = {
-//            ChaosTopAppBar(
+        topBar = {
+            ChaosTopAppBar(
+                title = "Favorites",
+                onSearchClick = onSearchClick,
+                onMenuClick = onMenuClick
 //                scrollBehavior = scrollBehavior,
-//                title = "Favorites",
-//                onSearchClick = onSearchClick,
-//                onMenuClick = { musicViewModel.showChaosBottomSheet() }
-//            )
-//        }
+            )
+        }
     ) { paddingValue ->
         Box(
             modifier = Modifier
@@ -104,11 +104,3 @@ fun FavoriteScreen(
         }
     }
 }
-
-// Text(
-//                    text = errorMessage ?: "Unknown error",
-//                    color = MaterialTheme.colorScheme.error,
-//                    modifier = Modifier
-//                        .align(Alignment.Center)
-//                        .padding(16.dp)
-//                )
