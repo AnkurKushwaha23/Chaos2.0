@@ -7,7 +7,6 @@ import com.ankurkushwaha.chaos20.domain.model.Song
 
 @Composable
 fun SongList(
-//    songs: LazyPagingItems<Song>,
     songs: List<Song>,
     onSongClick: (Song) -> Unit,
     onMenuItemClick: (Song, String) -> Unit
@@ -22,8 +21,3 @@ fun SongList(
         }
     }
 }
-// Using itemsIndexed from Paging to properly handle paging data
-//            count = songs.itemCount,
-//            key = { index ->
-//                songs[index]?.id ?: index
-//            }

@@ -152,6 +152,46 @@ class MusicRepositoryImpl @Inject constructor(
             .take(20)
     }
 
+    override suspend fun deleteSong(song: Song): Boolean= withContext(Dispatchers.IO) {
+        try {
+            Log.d("SongRepository", "Attempting to delete song: ${song.path}")
+
+            // Query MediaStore to find the content URI for this file path
+            val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+            val projection = arrayOf(MediaStore.Audio.Media._ID)
+            val selection = "${MediaStore.Audio.Media.DATA} = ?"
+            val selectionArgs = arrayOf(song.path)
+
+            context.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
+                    val contentUri = ContentUris.withAppendedId(uri, id)
+
+                    Log.d("SongRepository", "Found content URI: $contentUri")
+
+                    val deletedRows = context.contentResolver.delete(contentUri, null, null)
+                    val isDeleted = deletedRows > 0
+
+                    Log.d("SongRepository", "Deleted rows: $deletedRows")
+
+                    return@withContext isDeleted
+                } else {
+                    Log.d("SongRepository", "Song not found in MediaStore")
+                    return@withContext false
+                }
+            } ?: run {
+                Log.e("SongRepository", "Query returned null cursor")
+                return@withContext false
+            }
+        } catch (e: SecurityException) {
+            Log.e("SongRepository", "SecurityException: ${e.message}")
+            return@withContext false
+        } catch (e: Exception) {
+            Log.e("SongRepository", "Exception: ${e.message}")
+            return@withContext false
+        }
+    }
+
     override suspend fun fetchSongsFromMediaStore(): List<Song> = withContext(Dispatchers.IO) {
         val songs = mutableListOf<Song>()
 

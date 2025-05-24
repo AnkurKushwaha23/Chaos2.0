@@ -1,5 +1,7 @@
 package com.ankurkushwaha.chaos20.presentation.search_screen
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -62,6 +64,14 @@ fun SearchScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var isSuggestionChipsVisible by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        // Check if all required permissions are granted
+        val allGranted = permissions.all { it.value }
+        homeViewModel.onPermissionResult(allGranted)
+    }
 
     LaunchedEffect(Unit) {
         homeViewModel.fetchTopArtists()
@@ -194,9 +204,20 @@ fun SearchScreen(
                                     musicViewModel.queueNextSong(song)
                                 }
 
-                                "ADD_TO_PLAYLIST" -> {}
+                                "ADD_TO_PLAYLIST" -> {
+
+                                }
+
                                 "DETAILS" -> {
                                     musicViewModel.showSongDetail(song)
+                                }
+
+                                "DELETE" -> {
+                                    if (homeViewModel.hasExternalStoragePermission()) {
+                                        homeViewModel.deleteSong(song)
+                                    } else {
+                                        permissionLauncher.launch(homeViewModel.getRequiredPermissions())
+                                    }
                                 }
                             }
                         }

@@ -1,5 +1,6 @@
 package com.ankurkushwaha.chaos20.presentation.home_screen
 
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,9 @@ class HomeViewModel @Inject constructor(
     private val _permissionsGranted = MutableStateFlow(false)
     val permissionsGranted = _permissionsGranted.asStateFlow()
 
+    private val _needsManageStoragePermission = MutableStateFlow(false)
+    val needsManageStoragePermission = _needsManageStoragePermission.asStateFlow()
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
@@ -53,6 +57,8 @@ class HomeViewModel @Inject constructor(
      */
     fun checkPermissions() {
         _permissionsGranted.value = permissionRepository.hasRequiredPermissions()
+        _needsManageStoragePermission.value =
+            permissionRepository.needsManageExternalStoragePermission()
     }
 
     /**
@@ -66,11 +72,57 @@ class HomeViewModel @Inject constructor(
      * Handle permission result after user interaction
      */
     fun onPermissionResult(granted: Boolean) {
-        _permissionsGranted.value = granted
-        if (granted) {
+        _permissionsGranted.value = granted && permissionRepository.hasRequiredPermissions()
+
+        // Check if we still need MANAGE_EXTERNAL_STORAGE permission
+        _needsManageStoragePermission.value =
+            permissionRepository.needsManageExternalStoragePermission()
+
+        if (_permissionsGranted.value && !_needsManageStoragePermission.value) {
             loadSongs()
         }
     }
+
+    /**
+     * Handle result from MANAGE_EXTERNAL_STORAGE permission request
+     */
+    fun onManageExternalStorageResult() {
+        checkPermissions()
+        if (_permissionsGranted.value) {
+            loadSongs()
+        }
+    }
+
+    /**
+     * Get intent for requesting MANAGE_EXTERNAL_STORAGE permission
+     */
+    fun getManageExternalStorageIntent(): Intent? {
+        return permissionRepository.getManageExternalStorageIntent()
+    }
+
+    /**
+     * Check if app has external storage permissions
+     */
+    fun hasExternalStoragePermission(): Boolean {
+        return permissionRepository.hasExternalStoragePermission()
+    }
+
+    /**
+     * Force refresh permission status (useful when returning from settings)
+     */
+    fun refreshPermissionStatus() {
+        checkPermissions()
+    }
+
+    /**
+     * Handle permission result after user interaction
+     */
+//    fun onPermissionResult(granted: Boolean) {
+//        _permissionsGranted.value = granted
+//        if (granted) {
+//            loadSongs()
+//        }
+//    }
 
     /**
      * Load all songs directly from MediaStore
@@ -94,6 +146,24 @@ class HomeViewModel @Inject constructor(
                 Log.e("HomeViewModel", "Error loading songs", e)
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun removeSong(song: Song) {
+        val currentSongs = _songs.value.toMutableList()
+        val currentFilterSongs = _filteredSongs.value.toMutableList()
+        currentSongs.remove(song)
+        currentFilterSongs.remove(song)
+        _songs.value = currentSongs
+        _filteredSongs.value = currentFilterSongs
+    }
+
+    fun deleteSong(song: Song) {
+        viewModelScope.launch {
+            val isDeleted = musicRepository.deleteSong(song)
+            if (isDeleted) {
+                removeSong(song)
             }
         }
     }

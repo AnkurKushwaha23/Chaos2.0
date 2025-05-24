@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface MusicRepository {
     suspend fun fetchSongsFromMediaStore(): List<Song>
     suspend fun getArtistName(): List<String>
+    suspend fun deleteSong(song: Song): Boolean
 
     //favorite
     suspend fun addFavoriteSong(song: Song)

@@ -1,5 +1,6 @@
 package com.ankurkushwaha.chaos20.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -172,6 +173,14 @@ fun SongMenu(
                 text = { Text("Details") },
                 onClick = {
                     onMenuItemClick("DETAILS")
+                    expanded = false
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text("Delete") },
+                onClick = {
+                    onMenuItemClick("DELETE")
                     expanded = false
                 }
             )

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ankurkushwaha.chaos20.BuildConfig
 import com.ankurkushwaha.chaos20.R
 
 /**
@@ -59,6 +60,17 @@ fun DrawerContent(
     Text(
         text = "Chaos",
         fontSize = 28.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(3.dp))
+
+    val versionName = BuildConfig.VERSION_NAME
+
+    Text(
+        text = versionName.ifEmpty { "1.0" },
+        fontSize = 12.sp,
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth()
     )

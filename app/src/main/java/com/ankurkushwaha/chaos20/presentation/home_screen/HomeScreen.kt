@@ -23,6 +23,7 @@ import com.ankurkushwaha.chaos20.presentation.components.EmptyScreen
 import com.ankurkushwaha.chaos20.presentation.components.SongList
 import com.ankurkushwaha.chaos20.presentation.components.StoragePermissionScreen
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -35,6 +36,7 @@ fun HomeScreen(
 ) {
     val songs by homeViewModel.songs.collectAsState()
     val permissionsGranted by homeViewModel.permissionsGranted.collectAsState()
+    val needsManageStoragePermission by homeViewModel.needsManageStoragePermission.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
     val errorMessage by homeViewModel.errorMessage.collectAsState()
     val context = LocalContext.current
@@ -49,6 +51,13 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         homeViewModel.checkPermissions()
+    }
+
+    LaunchedEffect(needsManageStoragePermission) {
+        if (needsManageStoragePermission) {
+            val intent = homeViewModel.getManageExternalStorageIntent()
+            intent?.let { context.startActivity(it) }
+        }
     }
 
     Box(
@@ -97,6 +106,14 @@ fun HomeScreen(
 
                                     "DETAILS" -> {
                                         musicViewModel.showSongDetail(song)
+                                    }
+
+                                    "DELETE" -> {
+                                        if (homeViewModel.hasExternalStoragePermission()) {
+                                            homeViewModel.deleteSong(song)
+                                        } else {
+                                            permissionLauncher.launch(homeViewModel.getRequiredPermissions())
+                                        }
                                     }
                                 }
                             }
