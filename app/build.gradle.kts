@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -27,6 +29,14 @@ android {
         }
     }
 
+    val localProperties = Properties()
+    val localPropertiesFile = File(rootDir,"secret.properties")
+    if (localPropertiesFile.exists() && localPropertiesFile.isFile){
+        localPropertiesFile.inputStream().use {
+            localProperties.load(it)
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -39,6 +49,15 @@ android {
             firebaseCrashlytics {
                 mappingFileUploadEnabled = true
             }
+            buildConfigField("String", "APP_LINK", localProperties.getProperty("APP_LINK"))
+            buildConfigField("String", "EMAIL", localProperties.getProperty("EMAIL"))
+            buildConfigField("String", "PORTFOLIO_LINK", localProperties.getProperty("PORTFOLIO_LINK"))
+        }
+
+        debug{
+            buildConfigField("String", "APP_LINK", localProperties.getProperty("APP_LINK"))
+            buildConfigField("String", "EMAIL", localProperties.getProperty("EMAIL"))
+            buildConfigField("String", "PORTFOLIO_LINK", localProperties.getProperty("PORTFOLIO_LINK"))
         }
     }
     compileOptions {

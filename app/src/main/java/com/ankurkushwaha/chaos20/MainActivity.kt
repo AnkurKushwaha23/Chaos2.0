@@ -354,10 +354,9 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EMAIL = "ankursenpai@gmail.com"
-        private const val PORTFOLIO_LINK = "https://kushwaha-ankur.vercel.app/"
-        private const val APP_LINK =
-            "https://drive.google.com/file/d/1BK6uhYWuDJsHsvs05CTDTk2m77AxwuQr/view?usp=sharing" //change it
+        private const val EMAIL = BuildConfig.EMAIL
+        private const val PORTFOLIO_LINK = BuildConfig.PORTFOLIO_LINK
+        private const val APP_LINK = BuildConfig.APP_LINK
     }
 
     override fun onDestroy() {
