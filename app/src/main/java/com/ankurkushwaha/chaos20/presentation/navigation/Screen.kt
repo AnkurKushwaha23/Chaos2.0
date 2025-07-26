@@ -18,4 +18,7 @@ sealed class Screen {
 
     @Serializable
     data object Playlist : Screen()
+
+    @Serializable
+    data object Album : Screen()
 }

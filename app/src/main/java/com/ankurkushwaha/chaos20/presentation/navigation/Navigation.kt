@@ -78,6 +78,12 @@ fun Navigation(
 //                scrollBehavior = scrollBehavior,
             )
         }
+
+        composable <Screen.Album>{
+            LaunchedEffect(key1 = true) {
+                bottomNavViewModel.updateCurrentScreen(Screen.Album)
+            }
+        }
     }
 }
 
